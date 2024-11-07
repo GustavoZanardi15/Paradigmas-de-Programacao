@@ -89,3 +89,161 @@ Consultas para interagir com o sistema e obter respostas.
 Operadores lógicos para combinar múltiplas condições.
 Recursão e inferência lógica para problemas complexos.
 Esses conceitos permitem que se escrevam programas concisos e expressivos, capazes de fazer deduções lógicas sobre dados, como no caso de alocação de colaboradores a projetos e departamentos, e identificação de colaboradores sêniores.
+
+
+
+
+1. Funções Lógicas em PyDatalog
+Em PyDatalog, as funções lógicas não são explicitamente definidas como em outras linguagens (não há uma palavra-chave def ou function), mas você pode criar predicados que atuam de maneira semelhante a funções, realizando cálculos ou transformações em dados com base nas regras lógicas.
+
+As regras em PyDatalog podem ser vistas como funções que transformam dados de entrada (os parâmetros) em resultados (os valores que você deseja calcular ou manipular).
+
+Exemplo de função simples (relação) que soma dois números:
+
+python
+Copiar código
+from pyDatalog import pyDatalog
+
+pyDatalog.create_terms('X, Y, Z')
+
+# Definindo uma "função" que soma dois números
+soma(X, Y, Z) <= (X + Y == Z)
+
+# Consultando a soma de 3 e 4
+print(soma(3, 4, Z))  # Resultado: Z = 7
+Aqui, soma(X, Y, Z) atua como uma "função" que retorna o valor Z, que é a soma de X e Y.
+
+2. Funções com Condições e Comparações
+Você pode definir funções condicionais que realizam cálculos ou retornam valores com base em determinadas condições. As condições podem envolver comparações de maior, menor, igualdade, e até comparações complexas entre múltiplos parâmetros.
+
+Exemplo de função condicional que verifica se um número é maior que outro:
+
+python
+Copiar código
+maior_que(X, Y) <= X > Y
+Essa regra pode ser usada para definir uma função lógica que retorna se X é maior que Y.
+
+Exemplo de uso:
+
+python
+Copiar código
+print(maior_que(5, 3))  # Resultado: True
+print(maior_que(2, 4))  # Resultado: False
+Aqui, maior_que(X, Y) funciona como uma função lógica para comparar dois números.
+
+3. Funções Recursivas
+Em PyDatalog, você também pode criar funções recursivas, que são úteis para resolver problemas que exigem cálculos iterativos ou hierárquicos. A recursão em lógica é uma forma de "definir algo em termos de si mesmo", como acontece em árvores ou grafos.
+
+Exemplo de função recursiva que calcula o fatorial de um número:
+
+python
+Copiar código
+fatorial(0, 1)  # Definindo fatorial de 0 como 1
+
+fatorial(X, Z) <= X > 0 & fatorial(X-1, Y) & (Z == X * Y)  # Definindo a regra recursiva
+A regra acima diz que o fatorial de X é X multiplicado pelo fatorial de X-1, até que X seja igual a 0 (onde o fatorial é 1). Esse tipo de recursão é fundamental para resolver muitos problemas em programação lógica.
+
+Exemplo de uso:
+
+python
+Copiar código
+print(fatorial(5, Z))  # Resultado: Z = 120
+Aqui, o sistema calcula o fatorial de 5 com base na regra recursiva.
+
+4. Funções Agregadoras
+Funções agregadoras são funções que operam em conjuntos de dados, como contar, somar ou calcular a média de um conjunto de valores. Embora o PyDatalog não tenha suporte nativo para agregação como em SQL, você pode usar regras lógicas para agregar dados.
+
+Exemplo de contagem de elementos (quantidade de colaboradores):
+
+python
+Copiar código
+from pyDatalog import pyDatalog
+
+pyDatalog.create_terms('X, Y, Z, Colaborador')
+
+# Definindo fatos
++Colaborador('Alice', 30)
++Colaborador('Bob', 25)
++Colaborador('Carol', 35)
+
+# Função para contar o número de colaboradores
+total_colaboradores(Z) <= Colaborador(X, Y) & (Z == len([X for X in Colaborador]))
+Aqui, a função total_colaboradores(Z) retorna o número total de colaboradores na base de dados. Você poderia adaptar essa função para contar quaisquer outras entidades.
+
+5. Funções com Múltiplos Resultados (Equivalente a Retorno de Tuplas)
+PyDatalog também permite que você defina funções que retornam múltiplos valores ao mesmo tempo. Embora PyDatalog não use explicitamente tuplas, é possível simular isso ao trabalhar com variáveis múltiplas nas regras.
+
+Exemplo de função que retorna múltiplos resultados (nome e idade do colaborador):
+
+python
+Copiar código
+from pyDatalog import pyDatalog
+
+pyDatalog.create_terms('X, Y, Z, Colaborador')
+
++Colaborador('Alice', 30)
++Colaborador('Bob', 25)
++Colaborador('Carol', 35)
+
+# Função que retorna o nome e a idade de todos os colaboradores
+colaborador_info(X, Y) <= Colaborador(X, Y)
+Exemplo de uso:
+
+python
+Copiar código
+print(colaborador_info(X, Y))  # Resultado: X = Alice, Y = 30 ; X = Bob, Y = 25 ; X = Carol, Y = 35
+Essa consulta retorna todas as tuplas de colaboradores e suas idades, funcionando como uma "função" que retorna múltiplos resultados.
+
+6. Funções para Transformações de Dados
+Você também pode criar funções de transformação que mapeiam um conjunto de dados de uma forma para outra, como por exemplo converter idades, calcular salários ou transformar tipos de dados.
+
+Exemplo de função que aplica um aumento salarial a todos os colaboradores:
+
+python
+Copiar código
+aumento_salarial(X, Y, Z) <= Colaborador(X, Y) & (Z == Y * 1.1)
+Aqui, a função aumento_salarial(X, Y, Z) pega o salário Y de um colaborador X e aplica um aumento de 10% para obter o novo valor Z.
+
+Exemplo de uso:
+
+python
+Copiar código
+print(aumento_salarial('Alice', 3000, Z))  # Resultado: Z = 3300
+Esse exemplo simula uma função de transformação de dados, que aplica uma operação (aumento de salário) e retorna o novo valor.
+
+7. Funções para Manipulação de Listas
+Embora PyDatalog seja orientado à lógica de predicados, você pode trabalhar com listas e outras estruturas de dados compostos. Embora as listas não sejam um tipo nativo de PyDatalog, você pode usá-las de forma indireta, criando regras que manipulam listas.
+
+Exemplo de função que calcula a soma de uma lista de números:
+
+python
+Copiar código
+from pyDatalog import pyDatalog
+
+pyDatalog.create_terms('X, Y, Z')
+
+# Função que soma uma lista de números
+soma_lista([X], X)  # Caso base, soma de uma lista com um único elemento
+soma_lista([X] + L, Z) <= soma_lista(L, Y) & (Z == X + Y)
+Essa regra define a função recursiva soma_lista, que soma todos os números de uma lista, utilizando a recursão para iterar sobre a lista de números.
+
+Exemplo de uso:
+
+python
+Copiar código
+print(soma_lista([1, 2, 3, 4], Z))  # Resultado: Z = 10
+Conclusão
+Em PyDatalog, as funções são essencialmente regras lógicas que processam dados, com a capacidade de transformar, calcular, fazer comparações, manipular listas, contar e aplicar recursão. Ao invés de usar funções tradicionais como em linguagens imperativas, você define as regras que processam dados de forma declarativa, e o sistema resolve a lógica por meio de inferência.
+
+Os principais conceitos avançados para trabalhar com funções no PyDatalog incluem:
+
+Funções lógicas para realizar cálculos ou transformações.
+Funções recursivas para problemas hierárquicos ou iterativos.
+Funções agregadoras para contagem ou operações em conjuntos de dados.
+Funções para manipulação de múltiplos resultados (como tuplas ou listas).
+Funções condicionais e comparações para realizar transformações ou verificações baseadas em condições.
+Esses conceitos são cruciais para resolver problemas complexos de maneira declarativa, expressando operações e cálculos diretamente em termos lógicos, sem recorrer a estruturas imperativas tradicionais.
+
+
+
+
